@@ -1,0 +1,15 @@
+(defproject clj-google-storage "0.1.0-SNAPSHOT"
+  :description "Google storage api"
+  :url "http://example.com/FIXME"
+  :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
+            :url  "https://www.eclipse.org/legal/epl-2.0/"}
+  :dependencies [[org.clojure/clojure "1.10.0"]
+                 [com.cemerick/url "0.1.1"]
+                 [clj-http "3.9.1"]
+                 [org.clojure/data.json "0.2.6"]
+                 [clj-google "0.2.7"]]
+  :repositories [["releases" {:url           "https://clojars.org/repo"
+                              :username      :env/CLOJAR_USERNAME
+                              :password      :env/CLOJAR_PASSWORD
+                              :sign-releases false}]]
+  :repl-options {:init-ns clj-google-storage.core})
