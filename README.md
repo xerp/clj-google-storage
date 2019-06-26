@@ -1,3 +1,6 @@
+[![CircleCI](https://circleci.com/gh/xerp/clj-google-storage.svg?style=svg)](https://circleci.com/gh/xerp/clj-google-storage)
+
+
 # clj-google-storage
 
 A Clojure library designed to use Google Storage Api
