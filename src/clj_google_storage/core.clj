@@ -3,12 +3,10 @@
             [cemerick.url :refer [url url-encode]]
             [clojure.data.json :as json]
             [clj-google.auth :refer [*access-token*]]
-            [clojure.java.io :as io])
-  (:import (java.io ByteArrayInputStream ByteArrayOutputStream)))
+            [clojure.java.io :as io]))
 
 (def ^:private storage-base-url "https://www.googleapis.com")
 (def ^:private storage-api-version "v1")
-(def ^:private encoding "UTF-8")
 
 (defn- storage-retrieve-url
   [bucket-name object-name]
@@ -39,19 +37,21 @@
      (if-let [json-response (json-data http/get request-url request-data)]
        json-response))))
 
-(defn download-content-object
-  [bucket object-name]
-  (let [retrieve-url (storage-retrieve-url bucket object-name)
-        request-url (str (assoc retrieve-url :query {:alt "media"}))
-        request-data {:oauth-token *access-token*
-                      :accept      :json}]
-    (if-let [response (http/get request-url request-data)]
-      (response :body))))
+(defn get-content-object
+  ([bucket object-name]
+   (get-content-object bucket object-name :string))
+  ([bucket object-name content-as]
+   (let [retrieve-url (storage-retrieve-url bucket object-name)
+         request-url (str (assoc retrieve-url :query {:alt "media"}))
+         request-data {:oauth-token *access-token*
+                       :accept      :json
+                       :as          content-as}]
+     (if-let [response (http/get request-url request-data)]
+       (response :body)))))
 
 (defn download-object
   [bucket object-name destination-file]
-  (if-let [file-content (download-content-object bucket object-name)]
-    (with-open [input-stream (io/input-stream (.getBytes file-content encoding))
-                writer (io/writer destination-file)]
-      (io/copy input-stream writer)
-      (.toByteArray writer))))
+  (if-let [file-content-stream (get-content-object bucket object-name :stream)]
+    (with-open [out-stream (io/output-stream destination-file)]
+      (io/copy file-content-stream out-stream)
+      (byte-array (.length destination-file)))))
