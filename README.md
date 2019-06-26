@@ -3,6 +3,8 @@
 
 # clj-google-storage
 
+[![Clojars Project](https://img.shields.io/clojars/v/clj-google-storage.svg)](https://clojars.org/clj-google-storage)
+
 A Clojure library designed to use Google Storage Api
 
 ## Usage
