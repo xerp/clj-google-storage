@@ -7,6 +7,7 @@
 
 (def ^:private storage-base-url "https://www.googleapis.com")
 (def ^:private storage-api-version "v1")
+(def ^:private default-upload-content-type :application/octet-stream)
 
 (defn- storage-retrieve-url
   [bucket-name object-name]
@@ -25,33 +26,52 @@
     (let [json-response (json/read-str (response :body) :key-fn keyword)]
       json-response)))
 
-(defn get-object
-  ([bucket object-name]
-   (get-object bucket object-name {}))
-  ([bucket object-name query]
-   (let [retrieve-url (storage-retrieve-url bucket object-name)
-         request-url (str (assoc retrieve-url :query query))
+(defn get-file
+  ([bucket file-name]
+   (get-file bucket file-name {}))
+  ([bucket file-name query-string]
+   (let [retrieve-url (storage-retrieve-url bucket file-name)
+         request-url (str (assoc retrieve-url :query query-string))
          request-data {:oauth-token  *access-token*
                        :content-type :json
                        :accept       :json}]
+
      (if-let [json-response (json-data http/get request-url request-data)]
        json-response))))
 
-(defn get-content-object
-  ([bucket object-name]
-   (get-content-object bucket object-name :string))
-  ([bucket object-name content-as]
-   (let [retrieve-url (storage-retrieve-url bucket object-name)
+(defn get-content-file
+  ([bucket file-name]
+   (get-content-file bucket file-name :string))
+  ([bucket file-name content-as]
+   (let [retrieve-url (storage-retrieve-url bucket file-name)
          request-url (str (assoc retrieve-url :query {:alt "media"}))
          request-data {:oauth-token *access-token*
                        :accept      :json
                        :as          content-as}]
+
      (if-let [response (http/get request-url request-data)]
        (response :body)))))
 
-(defn download-object
-  [bucket object-name destination-file]
-  (if-let [file-content-stream (get-content-object bucket object-name :stream)]
+(defn download-file
+  [bucket file-name destination-file]
+  (if-let [file-content-stream (get-content-file bucket file-name :stream)]
     (with-open [out-stream (io/output-stream destination-file)]
       (io/copy file-content-stream out-stream)
       (byte-array (.length destination-file)))))
+
+(defn upload-file
+  ([bucket source destination-path]
+   (upload-file bucket source destination-path :media {}))
+  ([bucket source destination-path upload-type query-string]
+   (let [upload-url (storage-upload-url bucket)
+         query-string (merge query-string {:uploadType (name upload-type)
+                                           :name       destination-path})
+
+         source-file (get source :file source)
+         request-url (str (assoc upload-url :query query-string))
+         request-data {:content-length (.length source-file)
+                       :content-type   (get source :content-type default-upload-content-type)
+                       :body           source-file}]
+
+     (if-let [json-response (json-data http/post request-url request-data)]
+       json-response))))
