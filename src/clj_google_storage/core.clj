@@ -4,10 +4,11 @@
             [clojure.data.json :as json]
             [clj-google.auth :refer [*access-token*]]
             [clojure.java.io :as io])
-  (:import (java.io File)))
+  (:import (java.io ByteArrayInputStream ByteArrayOutputStream)))
 
 (def ^:private storage-base-url "https://www.googleapis.com")
 (def ^:private storage-api-version "v1")
+(def ^:private encoding "UTF-8")
 
 (defn- storage-retrieve-url
   [bucket-name object-name]
@@ -50,6 +51,7 @@
 (defn download-object
   [bucket object-name destination-file]
   (if-let [file-content (download-content-object bucket object-name)]
-    (with-open [writer (io/writer destination-file)]
-      (.write writer file-content)
-      true)))
+    (with-open [input-stream (io/input-stream (.getBytes file-content encoding))
+                writer (io/writer destination-file)]
+      (io/copy input-stream writer)
+      (.toByteArray writer))))
