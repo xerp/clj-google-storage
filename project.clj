@@ -1,4 +1,4 @@
-(defproject clj-google-storage "0.1.0-SNAPSHOT"
+(defproject clj-google-storage "1.0"
   :description "Google storage api"
   :url "https://github.com/xerp/clj-google-storage"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
