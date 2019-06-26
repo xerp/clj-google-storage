@@ -1,7 +1,7 @@
 [![CircleCI](https://circleci.com/gh/xerp/clj-google-storage.svg?style=svg)](https://circleci.com/gh/xerp/clj-google-storage)
 
 
-# clj-google-storage
+# Clojure Google Storage
 
 [![Clojars Project](https://img.shields.io/clojars/v/clj-google-storage.svg)](https://clojars.org/clj-google-storage)
 
