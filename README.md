@@ -2,8 +2,8 @@
 
 
 # Clojure Google Storage
-
 [![Clojars Project](https://img.shields.io/clojars/v/clj-google-storage.svg)](https://clojars.org/clj-google-storage)
+[![Dependencies Status](https://versions.deps.co/xerp/clj-google-storage/status.svg)](https://versions.deps.co/xerp/clj-google-storage)
 
 A Clojure library designed to use Google Storage Api
 
