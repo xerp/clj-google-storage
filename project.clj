@@ -5,7 +5,7 @@
             :url  "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [com.cemerick/url "0.1.1"]
-                 [clj-http "3.9.1"]
+                 [clj-http "3.10.0"]
                  [org.clojure/data.json "0.2.6"]
                  [clj-google "1.6"]]
   :repositories [["releases" {:url           "https://clojars.org/repo"
